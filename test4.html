@@ -5,90 +5,143 @@
 <title>Telegram Curl Generator</title>
 
 <style>
+
+*{
+box-sizing:border-box;
+font-family: system-ui, -apple-system, sans-serif;
+}
+
 body{
-    font-family: Arial, sans-serif;
-    background:#f4f6f8;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
+margin:0;
+background:#020617;
+color:#e2e8f0;
+display:flex;
+align-items:center;
+justify-content:center;
+height:100vh;
 }
 
-.container{
-    background:white;
-    padding:30px;
-    width:420px;
-    border-radius:10px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+.card{
+background:#0f172a;
+border:1px solid #1e293b;
+padding:30px;
+width:480px;
+border-radius:14px;
+box-shadow:0 10px 30px rgba(0,0,0,0.4);
 }
 
-h2{
-    margin-top:0;
+h1{
+font-size:20px;
+margin-bottom:6px;
+}
+
+p{
+font-size:14px;
+color:#94a3b8;
+margin-bottom:25px;
+}
+
+label{
+font-size:13px;
+display:block;
+margin-bottom:6px;
+color:#cbd5f5;
 }
 
 input, textarea{
-    width:100%;
-    padding:10px;
-    margin-top:6px;
-    margin-bottom:15px;
-    border-radius:6px;
-    border:1px solid #ccc;
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #1e293b;
+background:#020617;
+color:white;
+margin-bottom:18px;
 }
 
 textarea{
-    height:80px;
+height:80px;
+resize:none;
 }
 
 button{
-    padding:10px 16px;
-    border:none;
-    border-radius:6px;
-    background:#2b7cff;
-    color:white;
-    cursor:pointer;
+width:100%;
+padding:12px;
+border-radius:8px;
+border:none;
+background:#6366f1;
+color:white;
+font-weight:600;
+cursor:pointer;
+margin-top:5px;
 }
 
 button:hover{
-    background:#1f63cc;
+background:#4f46e5;
 }
 
 .output{
-    background:#111;
-    color:#0f0;
-    padding:12px;
-    border-radius:6px;
-    font-size:13px;
-    margin-top:15px;
-    word-break:break-all;
+margin-top:20px;
+background:#020617;
+border:1px solid #1e293b;
+padding:12px;
+border-radius:8px;
+font-size:13px;
+word-break:break-all;
+color:#22c55e;
 }
 
-.copy{
-    margin-top:10px;
-    background:#444;
+.copybtn{
+margin-top:10px;
+background:#1e293b;
 }
+
+.copybtn:hover{
+background:#334155;
+}
+
+.helper{
+font-size:12px;
+color:#64748b;
+margin-top:-14px;
+margin-bottom:14px;
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="card">
 
-<h2>Telegram Curl Generator</h2>
+<h1>Telegram Curl Generator</h1>
+
+<p>
+Fill the form below.  
+This tool will generate a ready-to-use <b>curl command</b>.
+</p>
 
 <label>Bot Token</label>
-<input id="token" placeholder="123456:ABC...">
+<input id="token" placeholder="Example: 123456:ABCDEF...">
+
+<div class="helper">
+This comes from Telegram BotFather when you create a bot.
+</div>
 
 <label>Chat ID</label>
-<input id="chatid" placeholder="123456789">
+<input id="chatid" placeholder="Example: 123456789">
+
+<div class="helper">
+This is the Telegram chat or user ID where the message will be sent.
+</div>
 
 <label>Message</label>
 <textarea id="message" placeholder="Hello from Twitter Monitor!"></textarea>
 
-<button onclick="generate()">Generate Curl</button>
+<button onclick="generate()">Generate Curl Command</button>
 
-<div class="output" id="result"></div>
+<div id="result" class="output"></div>
 
-<button class="copy" onclick="copyCmd()">Copy Command</button>
+<button class="copybtn" onclick="copyCmd()">Copy Command</button>
 
 </div>
 
@@ -96,22 +149,30 @@ button:hover{
 
 function generate(){
 
-let token=document.getElementById("token").value.trim();
-let chat=document.getElementById("chatid").value.trim();
-let msg=encodeURIComponent(document.getElementById("message").value.trim());
+let token = document.getElementById("token").value.trim()
+let chat = document.getElementById("chatid").value.trim()
+let msg = encodeURIComponent(document.getElementById("message").value.trim())
 
-let curl=`curl "https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat}&text=${msg}"`;
+if(!token || !chat || !msg){
+document.getElementById("result").innerText="Please fill all fields first."
+return
+}
 
-document.getElementById("result").innerText=curl;
+let curl = `curl "https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat}&text=${msg}"`
+
+document.getElementById("result").innerText = curl
+
 }
 
 function copyCmd(){
 
-let text=document.getElementById("result").innerText;
+let text=document.getElementById("result").innerText
 
-navigator.clipboard.writeText(text).then(()=>{
-alert("Copied!");
-});
+if(!text) return
+
+navigator.clipboard.writeText(text)
+
+alert("Command copied!")
 
 }
 
